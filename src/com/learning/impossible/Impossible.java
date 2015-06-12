@@ -25,12 +25,22 @@ public class Impossible extends SurfaceView implements Runnable{
 	private double distance;
 	private boolean gameover;
 	
+	
+	// score
+	private int score;
+	
 	public Impossible(Context context) {
 		super(context);
 		paint = new Paint();
 		holder = getHolder();
 	}
 
+	/*
+	 * Thread Principal onde acontece todo o processo
+	 * de desenho e movimentação dos objetos na tela
+	 * do dispositivo
+	 * 
+	 */
 	@Override
 	public void run() {
 		while (running){
@@ -48,34 +58,48 @@ public class Impossible extends SurfaceView implements Runnable{
 			
 			if (gameover){
 				stopGame(canvas);
+				/* Destravamento do canvas para poder exibir a mensagem
+				 * de fim de jogo na tela. */
+				holder.unlockCanvasAndPost(canvas);
 				break;
 			}
+			
+			drawScore(canvas);
 			
 			holder.unlockCanvasAndPost(canvas);
 		}
 	}
 	
+	// Desenhar o player na tela do dispositivo
 	private void drawPlayer(Canvas canvas){
 		paint.setColor(Color.GREEN);
 		canvas.drawCircle(playerX, playerY, 50, paint);
 	}
 	
+
 	public void resume(){
 		this.running = true;
 		this.renderThread = new Thread(this);
 		this.renderThread.start();
 	}
 
+	// método para mover o objeto para baixo
 	public void moveDown(int pixels){
 		playerY += pixels;
 	}
 	
+	// Desenhar o enimigo na tela
 	private void drawEnemy(Canvas canvas){
 		paint.setColor(Color.GRAY);
-		enemyRadius++;
+		enemyRadius++; // faz com que o enimigo aumente seu tamanho gradativamente
 		canvas.drawCircle(enemyX, enemyY, enemyRadius, paint);
 	}
 	
+	
+	// Adicionar score
+	public void addScore(int points){
+		score += points;
+	}
 	private void checkCollision(Canvas canvas){
 		
 		distance = Math.pow(playerY - enemyY, 2)
@@ -88,6 +112,20 @@ public class Impossible extends SurfaceView implements Runnable{
 		}
 	}
 	
+	/*
+	 * Exibição do score na tela do dispositivo
+	 */
+	
+	private void drawScore(Canvas canvas){
+		paint.setStyle(Style.FILL);
+		paint.setColor(Color.WHITE);
+		paint.setTextSize(50);
+		canvas.drawText(String.valueOf(score), 50, 200, paint);
+	}
+	
+	/*
+	 * Método para exibir a mensagem de fim do jogo
+	 */
 	private void stopGame(Canvas canvas){
 		paint.setStyle(Style.FILL);
 		paint.setColor(Color.LTGRAY);

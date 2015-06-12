@@ -27,6 +27,7 @@ public class Game extends Activity implements OnTouchListener {
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		view.moveDown(10);
+		view.addScore(100);
 		return true;
 	}
 }
