@@ -1,6 +1,8 @@
 package com.learning.impossible;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -49,17 +51,18 @@ public class Impossible extends SurfaceView implements Runnable{
 				continue;
 			
 			Canvas canvas = holder.lockCanvas();
-			canvas.drawColor(Color.BLACK);
+			canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ceu),0,0,null);
 			
 			drawPlayer(canvas);
 			drawEnemy(canvas);
 			
 			checkCollision(canvas);
-			
+			drawButtons(canvas);
 			if (gameover){
 				stopGame(canvas);
 				/* Destravamento do canvas para poder exibir a mensagem
 				 * de fim de jogo na tela. */
+				
 				holder.unlockCanvasAndPost(canvas);
 				break;
 			}
@@ -72,8 +75,8 @@ public class Impossible extends SurfaceView implements Runnable{
 	
 	// Desenhar o player na tela do dispositivo
 	private void drawPlayer(Canvas canvas){
-		paint.setColor(Color.GREEN);
-		canvas.drawCircle(playerX, playerY, 50, paint);
+		canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.nave), playerX - 50, playerY - 50,null);
+		
 	}
 	
 
@@ -111,6 +114,39 @@ public class Impossible extends SurfaceView implements Runnable{
 			gameover = true;
 		}
 	}
+	
+	/*
+	 * Botões de sair e reiniciar o jogo
+	 */
+	
+	private void drawButtons(Canvas canvas){
+		// Restart
+		paint.setStyle(Style.FILL);
+		paint.setColor(Color.WHITE);
+		paint.setTextSize(30);
+		canvas.drawText("Restart", 50, 200, paint);
+		
+		// Exit
+		paint.setStyle(Style.FILL);
+		paint.setColor(Color.WHITE);
+		paint.setTextSize(30);
+		canvas.drawText("Exit", 50, 300, paint);
+	}
+	
+	/*
+	 * Reiniciar jogo
+	 */
+	public void init(){
+		enemyX = enemyY = enemyRadius = 0;
+		playerX = playerY = 30;
+		playerRadius = 10;
+		gameover = false;
+		// Zerar o placar do jogo
+		score = 0;
+		// Reiniciar o jogo caso o usuário queira.
+		this.renderThread.run();
+	}
+	
 	
 	/*
 	 * Exibição do score na tela do dispositivo
