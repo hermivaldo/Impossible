@@ -29,8 +29,8 @@ public class GameButtons extends CCLayer implements ButtonDelegate{
 		
 		setButtonsPosition();
 		
-		addChild(leftControl);
-		addChild(rightControl);
+//		addChild(leftControl);
+//		addChild(rightControl);
 		addChild(shootButton);
 		
 	}

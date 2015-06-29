@@ -5,8 +5,12 @@ import org.cocos2d.actions.interval.CCFadeOut;
 import org.cocos2d.actions.interval.CCScaleBy;
 import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.actions.interval.CCSpawn;
+import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.sound.SoundEngine;
 import org.cocos2d.types.CGPoint;
+
+import com.learning.impossible.R;
 
 import br.com.casadocodigo.config.Assets;
 import static br.com.casadocodigo.config.DeviceSettings.screenResolution;
@@ -34,7 +38,8 @@ public class Shoot extends CCSprite{
 	}
 	
 	public void start(){
-		System.out.println("shoot moving");
+		SoundEngine.sharedEngine().playEffect(
+				CCDirector.sharedDirector().getActivity(), R.raw.shoot);
 	}
 	
 	public void explode(){

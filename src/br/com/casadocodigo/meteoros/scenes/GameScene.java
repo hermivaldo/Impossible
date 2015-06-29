@@ -6,9 +6,13 @@ import java.util.List;
 
 import org.cocos2d.layers.CCLayer;
 import org.cocos2d.layers.CCScene;
+import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.sound.SoundEngine;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGRect;
+
+import com.learning.impossible.R;
 
 import br.com.casadocodigo.config.Assets;
 import br.com.casadocodigo.config.GameButtons;
@@ -63,8 +67,26 @@ public class GameScene extends CCLayer implements MeteorEngineDelegate, ShootEng
 		
 		this.scoreLayer = CCLayer.node();
 		this.addChild(scoreLayer);
+		
+		SoundEngine.sharedEngine().playSound(
+				CCDirector.sharedDirector().getActivity(),
+				R.raw.music, true);
 		/*Deixar este elemento no final*/
+
 		this.addGameObjects();
+		startGame();
+	}
+	
+	private void preloadCache(){
+		SoundEngine.sharedEngine().preloadEffect(
+				CCDirector.sharedDirector().getActivity(),
+				R.raw.shoot);
+		SoundEngine.sharedEngine().preloadEffect(
+				CCDirector.sharedDirector().getActivity(),
+				R.raw.bang);
+		SoundEngine.sharedEngine().preloadEffect(
+				CCDirector.sharedDirector().getActivity(),
+				R.raw.over);
 	}
 	
 	public void addGameObjects(){
@@ -125,6 +147,10 @@ public class GameScene extends CCLayer implements MeteorEngineDelegate, ShootEng
 		return result;
 	}
 	
+	public void startGame(){
+		player.catchAccelerometer();
+	}
+	
 	public CGRect getBorders(CCSprite object){
 		CGRect rect = object.getBoundingBox();
 		CGPoint glPoint = rect.origin;
@@ -180,6 +206,8 @@ public class GameScene extends CCLayer implements MeteorEngineDelegate, ShootEng
 	public void meteoroHit(CCSprite meteor, CCSprite shoot){
 		((Meteor) meteor).shooted();
 		((Shoot) shoot).explode();
+		this.removeMeteor(((Meteor) meteor));
+		this.removeShoot(((Shoot) shoot));
 		this.score.increse();
 	}
 	
@@ -198,12 +226,10 @@ public class GameScene extends CCLayer implements MeteorEngineDelegate, ShootEng
 	@Override
 	public void removeMeteor(Meteor meteor) {
 		this.meteorArray.remove(meteor);
-		
 	}
 
 	@Override
 	public void removeShoot(Shoot shoot) {
 		this.shootsArray.remove(shoot);
-		
 	}
 }
